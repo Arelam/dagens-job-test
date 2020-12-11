@@ -27,8 +27,16 @@ export default class ProductForm extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
-		alert('submit '+this.state.uuid+' '+this.state.name);
-		console.log(this.state.uuid);
+		
+		fetch('http://0.0.0.0:3001/product', {
+			method: 'POST',
+			headers: {
+				"Content-Type": "application/json",
+				Accept: "application/json",
+					},
+			body: JSON.stringify(this.state),
+		})
+		.then( resp => console.log(resp) );
 		this.resetFormValues();
 	}
 

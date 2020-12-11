@@ -17,6 +17,11 @@ app.get('/', (_, res) => {
   res.send({ status: 200 });
 });
 
+app.post('/product', function (req, res) {
+  console.log(req.body);
+  res.send(req.body.uuid);
+})
+
 process.on('SIGINT', function () {
   process.exit();
 });
