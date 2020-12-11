@@ -52,11 +52,49 @@ app.get('/similarProduct/:id', function (req, res) {
   
   const findClosest = goal => (a,b) => Math.abs(a.price - goal) < Math.abs(b.price - goal) ? a : b;
   const closestProduct = sortProducts.reduce(findClosest(searchedProduct.price));
-  //.map(p => Math.abs(p.price - searchedProduct.price))
-  
-//.reduce((pre, cur) => Math.abs(cur.price - searchedProduct.price) < Math.abs(pre.price - searchedProduct.price) ? cur : pre)
 
   res.send(closestProduct);
+});
+
+app.get('/similarProducts/:id', function (req, res) {
+  const numNearest = 5;
+  const id = req.params.id;
+  const searchedProduct = products.filter(p => p.id === id)[0];
+  const sortProducts = products.filter(p => p.category == searchedProduct.category && p.id !== searchedProduct.id).sort((a, b) => a.price- b.price);
+  
+  const searchMax = (numNearest < sortProducts.length) ? numNearest : sortProducts.length;
+  const temp = [];
+
+  const closest = function(price, array) {
+    let current = array[0];
+    current['arr'] = 0;
+    let diff = Math.abs(price - current.price);
+    let index = array.length;
+    while(index--) {
+      const nDiff = Math.abs(price - array[index].price);
+      if(nDiff < diff) {
+        diff = nDiff;
+        current = array[index];
+        current['arr'] = index;
+      }
+    }
+    return current;
+  };
+
+  const addCloseProducts = function(array, number) {
+    let out = [];
+    let arr = array;
+    while (out.length < number) {
+      let item = closest(searchedProduct.price, arr);
+      arr.splice(item['arr'], 1);
+      delete item['arr'];
+      out.push(item);
+    }
+    return out;
+  }
+
+  const nClose = addCloseProducts(sortProducts, searchMax);
+  res.send(nClose);
 });
 
 process.on('SIGINT', function () {
