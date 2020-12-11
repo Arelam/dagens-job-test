@@ -26,6 +26,8 @@ app.post('/product', function (req, res) {
 app.get('/products/:category/price-:priceMax-:priceMin/:page?', function (req, res) {
   const pageSize = 24;
   const pageNum = req.params.page ?? 0;
+  const pStart = pageSize*pageNum;
+  const pEnd = pStart+pageSize;
 
   const category = req.params.category;
   const priceMax = req.params.priceMax;
@@ -35,7 +37,7 @@ app.get('/products/:category/price-:priceMax-:priceMin/:page?', function (req, r
     p.category == category &&
     p.price < priceMax &&
     p.price > priceMin
-  );
+  ).slice(pStart, pEnd);
 
   console.log(priceMax);
 
