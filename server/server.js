@@ -42,7 +42,22 @@ app.get('/products/:category/price-:priceMax-:priceMin/:page?', function (req, r
   console.log(priceMax);
 
   res.send(produce);
-})
+});
+
+app.get('/similarProduct/:id', function (req, res) {
+  const numNearest = 1;
+  const id = req.params.id;
+  const searchedProduct = products.filter(p => p.id === id)[0];
+  const sortProducts = products.filter(p => p.category == searchedProduct.category && p.id !== searchedProduct.id).sort((a, b) => a.price- b.price);
+  
+  const findClosest = goal => (a,b) => Math.abs(a.price - goal) < Math.abs(b.price - goal) ? a : b;
+  const closestProduct = sortProducts.reduce(findClosest(searchedProduct.price));
+  //.map(p => Math.abs(p.price - searchedProduct.price))
+  
+//.reduce((pre, cur) => Math.abs(cur.price - searchedProduct.price) < Math.abs(pre.price - searchedProduct.price) ? cur : pre)
+
+  res.send(closestProduct);
+});
 
 process.on('SIGINT', function () {
   process.exit();
