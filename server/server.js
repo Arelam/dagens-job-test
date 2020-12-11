@@ -48,7 +48,9 @@ app.get('/similarProduct/:id', function (req, res) {
   const numNearest = 1;
   const id = req.params.id;
   const searchedProduct = products.filter(p => p.id === id)[0];
-  const sortProducts = products.filter(p => p.category == searchedProduct.category && p.id !== searchedProduct.id).sort((a, b) => a.price- b.price);
+  const sortProducts = products
+    .filter(p => p.category == searchedProduct.category && p.id !== searchedProduct.id)
+    .sort((a, b) => a.price- b.price);
   
   const findClosest = goal => (a,b) => Math.abs(a.price - goal) < Math.abs(b.price - goal) ? a : b;
   const closestProduct = sortProducts.reduce(findClosest(searchedProduct.price));
@@ -60,7 +62,9 @@ app.get('/similarProducts/:id', function (req, res) {
   const numNearest = 5;
   const id = req.params.id;
   const searchedProduct = products.filter(p => p.id === id)[0];
-  const sortProducts = products.filter(p => p.category == searchedProduct.category && p.id !== searchedProduct.id).sort((a, b) => a.price- b.price);
+  const sortProducts = products
+    .filter(p => p.category == searchedProduct.category && p.id !== searchedProduct.id)
+    .sort((a, b) => a.price- b.price);
   
   const searchMax = (numNearest < sortProducts.length) ? numNearest : sortProducts.length;
   const temp = [];
