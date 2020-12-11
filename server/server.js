@@ -19,7 +19,27 @@ app.get('/', (_, res) => {
 
 app.post('/product', function (req, res) {
   console.log(req.body);
-  res.send(req.body.uuid);
+  products.push(req.body);
+  res.send(req.body);
+})
+
+app.get('/products/:category/price-:priceMax-:priceMin/:page?', function (req, res) {
+  const pageSize = 24;
+  const pageNum = req.params.page ?? 0;
+
+  const category = req.params.category;
+  const priceMax = req.params.priceMax;
+  const priceMin = req.params.priceMin ?? 0;
+
+  const produce = products.filter(p =>
+    p.category == category &&
+    p.price < priceMax &&
+    p.price > priceMin
+  );
+
+  console.log(priceMax);
+
+  res.send(produce);
 })
 
 process.on('SIGINT', function () {
